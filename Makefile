@@ -1,35 +1,62 @@
-all: static
+all:
+	case x$(OS) in \
+	xWindows*) \
+		case x$(shell uname) in \
+		xCYGWIN*)
+			make $(if $(STATICPERLPREFIX),STATICPERL=$(STATICPERLPREFIX)/perl-cygwin-static,)         static;\
+			make $(if $(STATICPERLPREFIX),STATICPERL=$(STATICPERLPREFIX)/perl-cygwin-dyn,   ) USEDL=y static;;\
+		esac; \
+		make $(if $(STATICPERLPREFIX),STATICPERL=$(STATICPERLPREFIX)/perl-win32-static,) FORCEOS=MINGW         static; \
+		make $(if $(STATICPERLPREFIX),STATICPERL=$(STATICPERLPREFIX)/perl-win32-dyn,)    FORCEOS=MINGW USEDL=y static;; \
+	*) \
+		make $(if $(STATICPERLPREFIX),STATICPERL=$(STATICPERLPREFIX)/perl-static,)        static;\
+		make $(if $(STATICPERLPREFIX),STATICPERL=$(STATICPERLPREFIX)/perl-dyn,)   USEDL=y static;;\
+	esac
 
-OS?=$(shell uname)
-TMP_PERL=tmp-perl$(OS)
+all-opt:
+	make STATICPERLPREFIX=/opt/ all
+
+
+ISOS?=$(shell uname)
+TMP_PERL=tmp-perl$(if $(FORCEOS),$(FORCEOS),$(ISOS))$(if $(USEDL),-dyn,)
+PREFIX=$(if $(STATICPERL),$(STATICPERL),$(CURDIR)/$(TMP_PERL))
 static:
-	mkdir -p $(TMP_PERL);
-	cd $(TMP_PERL); rm -rf dmake; case `uname` in 					\
+	echo "Prefix: $(PREFIX)"
+	echo "Prefix: $(PREFIX)"
+	mkdir -p $(PREFIX);
+	cd $(PREFIX); rm -rf dmake; case $(FORCEOS)`uname` in 					\
           MINGW* ) 									\
-		wget http://search.cpan.org/CPAN/authors/id/S/SH/SHAY/dmake-4.12.2.2.zip; unzip dmake-4.12.2.2.zip;\
 		if [ ! -f strawberry-perl-5.18.2.2-64bit-portable.zip ]; then 		\
 			wget http://strawberryperl.com/download/5.18.2.2/strawberry-perl-5.18.2.2-64bit-portable.zip; \
 		fi; 									\
-		unzip -f strawberry-perl-5.18.2.2-64bit-portable.zip;			\
-		export PATH=$(CURDIR)/$(TMP_PERL)/c/bin:$$PATH; 			\
-		rm -rf App-Staticperl-1.43 perl src; wget http://search.cpan.org/CPAN/authors/id/M/ML/MLEHMANN/App-Staticperl-1.43.tar.gz; tar xvf App-Staticperl-1.43.tar.gz; \
+		mkdir -p strawberry; cd strawberry; unzip -n ../strawberry-perl-5.18.2.2-64bit-portable.zip; cd ..;			\
+		rm -rf App-Staticperl-1.43* perl src; wget http://search.cpan.org/CPAN/authors/id/M/ML/MLEHMANN/App-Staticperl-1.43.tar.gz; tar xvf App-Staticperl-1.43.tar.gz; \
 		cat $(CURDIR)/patches/app-staticperl-1.43.patch | patch -p1 -d App-Staticperl-1.43; \
 		cd App-Staticperl-1.43/;  						\
-		export PATH=$(CURDIR)/$(TMP_PERL)/c/bin:$(CURDIR)/$(TMP_PERL)/dmake:/usr/bin:/mingw/bin:$$PATH; \
-		STATICPERL=$(CURDIR)/$(TMP_PERL) bash ./staticperl.sh fetch; 		\
-		cd $(CURDIR)/$(TMP_PERL)/src/perl-5.18.2/win32; cmd.exe /c dmake; 	\
+		export PATH=/usr/bin:/mingw/bin:$$PATH; \
+		$(if $(FORCEOS),export FORCEOS=$(FORCEOS);,) \
+		STATICPERL=$(PREFIX) bash ./staticperl.sh fetch; 		\
+		export PATH=$(PREFIX)/strawberry/c/bin:/usr/bin:/mingw/bin:$$PATH; \
+		cd $(PREFIX)/src/perl-5.18.2/win32; $(if $(USEDL),cp makefile.dyn.mk makefile.mk;,) \
+		sed -ri 's@--INST--@$(subst \,\\,$(shell cygpath -w $(PREFIX)))\\perl@' makefile.mk; \
+		unset SHELL; cmd.exe /c dmake.exe; cmd.exe /c dmake.exe install; 	\
 		;; \
 	  Darwin*|CYGWIN*|Linux*) \
-		rm -rf $(CURDIR)/$(TMP_PERL)/*; \
-		rm -rf App-Staticperl-1.43 perl src; wget http://search.cpan.org/CPAN/authors/id/M/ML/MLEHMANN/App-Staticperl-1.43.tar.gz; tar xvf App-Staticperl-1.43.tar.gz; \
+		rm -rf $(PREFIX)/*; \
+		rm -rf App-Staticperl-1.43* perl src; wget http://search.cpan.org/CPAN/authors/id/M/ML/MLEHMANN/App-Staticperl-1.43.tar.gz; tar xvf App-Staticperl-1.43.tar.gz; \
 		cat $(CURDIR)/patches/app-staticperl-1.43.patch | patch -p1 -d App-Staticperl-1.43; \
-		cd  $(CURDIR)/$(TMP_PERL)/App-Staticperl-1.43/;  					\
-		export STATICPERL=$(CURDIR)/$(TMP_PERL); \
+		cd  $(PREFIX)/App-Staticperl-1.43/;  					\
+		export STATICPERL=$(PREFIX); $(if $(USEDL),export USEDL=$(USEDL);,)\
 		bash ./staticperl.sh build; 	\
 		bash ./staticperl.sh install; 	\
 		;; \
 	esac; 
 
+# $(if $(findstring CYGWIN,$(shell uname)),cygstart,) 
+#		export PATH=$(PREFIX)/strawberry/c/bin:/usr/bin:/mingw/bin:$$PATH; \
+#		cd $(PREFIX)/src/perl-5.18.2/win32; $(if $(USEDL),cp makefile.dyn.mk makefile.mk;,) \
+#		sed -ri 's@--INST--@$(subst \,\\,$(shell cygpath -w $(PREFIX)))\\perl@' makefile.mk; \
+#+unset SHELL; cmd.exe /c dmake.exe; cmd.exe /c dmake.exe install; 	\
 
 static-gen-diff:
 	-cd tmp-perl; find App-Staticperl-1.43.new | grep ~\$$ |xargs rm $$1
