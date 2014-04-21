@@ -19,7 +19,7 @@ static:
 		STATICPERL=$(CURDIR)/$(TMP_PERL) bash ./staticperl.sh fetch; 		\
 		cd $(CURDIR)/$(TMP_PERL)/src/perl-5.18.2/win32; cmd.exe /c dmake; 	\
 		;; \
-	  CYGWIN*|Linux*) \
+	  Darwin*|CYGWIN*|Linux*) \
 		rm -rf $(CURDIR)/$(TMP_PERL)/*; \
 		rm -rf App-Staticperl-1.43 perl src; wget http://search.cpan.org/CPAN/authors/id/M/ML/MLEHMANN/App-Staticperl-1.43.tar.gz; tar xvf App-Staticperl-1.43.tar.gz; \
 		cat $(CURDIR)/patches/app-staticperl-1.43.patch | patch -p1 -d App-Staticperl-1.43; \

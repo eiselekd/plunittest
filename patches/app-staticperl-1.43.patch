@@ -326,12 +326,16 @@ diff -Naur App-Staticperl-1.43.ori/patches/mingw/perl-5.18.2/perl.diff App-Stati
 diff -Naur App-Staticperl-1.43.ori/staticperl.sh App-Staticperl-1.43.new/staticperl.sh
 --- App-Staticperl-1.43.ori/staticperl.sh	2014-04-20 09:39:01.290698800 +0200
 +++ App-Staticperl-1.43.new/staticperl.sh	2014-04-21 01:04:47.663481800 +0200
-@@ -2,17 +2,21 @@
+@@ -2,17 +2,25 @@
  
  #############################################################################
  # configuration to fill in (or to replace in your .staticperlrc)
 +SCRIPTPATH=`dirname $0`
-+SCRIPTPATH=`readlink -f $SCRIPTPATH`
++case `uname` in
++Darwin*) SCRIPTPATH=`type -p $0`; SCRIPTPATH=`dirname $SCRIPTPATH`;;
++*)       SCRIPTPATH=`readlink -f $SCRIPTPATH`;;
++esac
++echo "SCRIPTPATH: $SCRIPTPATH"
  
 -STATICPERL=~/.staticperl
 +if [ "x"$STATICPERL == "x" ]; then
@@ -352,11 +356,12 @@ diff -Naur App-Staticperl-1.43.ori/staticperl.sh App-Staticperl-1.43.new/staticp
  PERL_CCFLAGS="-g -DPERL_DISABLE_PMC -DPERL_ARENA_SIZE=16376 -DNO_PERL_MALLOC_ENV -D_GNU_SOURCE -DNDEBUG"
  PERL_OPTIMIZE="-Os" # -Os -ffunction-sections -fdata-sections -finline-limit=8 -ffast-math"
  
-@@ -36,6 +40,14 @@
+@@ -36,6 +40,15 @@
  PERL_LDFLAGS=
  PERL_LIBS="-lm -lcrypt" # perl loves to add lotsa crap itself
  
 +case `uname` in
++    Darwin* ) PERL_LIBS="-lm ";;
 +    MINGW* )
 +	PERL_LIBS="-lm -lcrypt32" 
 +	# note: install msys-libcrypt devel first
@@ -465,7 +470,7 @@ diff -Naur App-Staticperl-1.43.ori/staticperl.sh App-Staticperl-1.43.new/staticp
 -#   trace configure \
 -   sh Configure -Duselargefiles \
 +       ;;
-+   Linux*) 
++   Darwin*|Linux*) 
 +       # trace configure \
 +       bash Configure -Duselargefiles \
                  -Uuse64bitint \
