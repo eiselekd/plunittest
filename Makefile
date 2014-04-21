@@ -1,6 +1,7 @@
 all: static
 
-TMP_PERL=tmp-perl$(shell uname)
+OS?=$(shell uname)
+TMP_PERL=tmp-perl$(OS)
 static:
 	mkdir -p $(TMP_PERL);
 	cd $(TMP_PERL); rm -rf dmake; case `uname` in 					\
