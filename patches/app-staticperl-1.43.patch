@@ -1,0 +1,539 @@
+diff -Naur App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/Configure.diff App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/Configure.diff
+--- App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/Configure.diff	1970-01-01 01:00:00.000000000 +0100
++++ App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/Configure.diff	2014-04-21 02:14:13.180435300 +0200
+@@ -0,0 +1,84 @@
++--- perl-5.18.2.ori/Configure	2014-04-20 17:28:14.608875800 +0200
+++++ perl-5.18.2/Configure	2014-04-21 02:14:06.760620100 +0200
++@@ -30,6 +30,7 @@
++ 
++ # Generated on Wed May  8 15:28:09 CEST 2013 [metaconfig 3.5 PL0]
++ # (with additional metaconfig patches by perlbug@perl.org)
+++#set -x
++ 
++ cat >c1$$ <<EOF
++ ARGGGHHHH!!!!!
++@@ -22579,6 +22580,9 @@
++ shift
++ avail_ext="$*"
++ 
+++echo "----------------------- avail ----------------------"
+++echo $avail_ext
+++
++ case "$onlyextensions" in
++ '') ;;
++ *)  keepextensions=''
++@@ -22626,6 +22630,10 @@
++ shift
++ nonxs_ext="$*"
++ 
+++echo "------------------ usedl ---------------------"
+++echo $usedl
+++
+++
++ case $usedl in
++ $define)
++ 	$cat <<EOM
++@@ -22713,14 +22721,30 @@
++ Note that DynaLoader is always built and need not be mentioned here.
++ 
++ EOM
+++
+++echo "----------------------- static now ----------------------"
+++echo $static_ext
+++
++ 	case "$static_ext" in
++ 	'') dflt="$avail_ext" ;;
++-	*)	dflt="$static_ext"
++-		# Perhaps we are reusing an old out-of-date config.sh.
++-		case "$hint" in
++-		previous)
++-			if test X"$static_ext" != X"$avail_ext"; then
++-				$cat <<EOM
+++	*)	
+++		case "$osname" in
+++		cygwin) 
+++			case "$static_ext" in
+++			    # win32core comes from hints/cygwin.sh
+++			    'Win32CORE') 
+++				dflt="`echo $avail_ext | sed -e 's@Win32API/File@ @' -e 's@Win32@ @' `" ;;
+++			    *)
+++				dflt="$avail_ext" ;;
+++			esac
+++			;;
+++		*)
+++			dflt="$static_ext"
+++			# Perhaps we are reusing an old out-of-date config.sh.
+++			case "$hint" in
+++			    previous)
+++				if test X"$static_ext" != X"$avail_ext"; then
+++				    $cat <<EOM
++ NOTICE:  Your previous config.sh list may be incorrect.
++ The extensions now available to you are
++ 	${avail_ext}
++@@ -22728,10 +22752,14 @@
++ 	${static_ext}
++ 
++ EOM
++-			fi
+++				fi
+++				;;
+++			esac
++ 			;;
+++
++ 		esac
++ 		;;
+++
++ 	esac
++ 	: Exclude those that are not xs extensions
++ 	case "$dflt" in
+diff -Naur App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/perlio.h.diff App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/perlio.h.diff
+--- App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/perlio.h.diff	1970-01-01 01:00:00.000000000 +0100
++++ App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/perlio.h.diff	2014-04-20 10:24:43.574548400 +0200
+@@ -0,0 +1,12 @@
++--- perlio.h	2014-04-20 00:23:58.216260600 +0200
+++++ perlio.h	2014-04-20 00:24:38.925531300 +0200
++@@ -153,7 +153,9 @@
++  * PERLIO_NOT_STDIO #define'd as 1
++  * Case 1: Strong denial of stdio - make all stdio calls (we can think of) errors
++  */
+++#ifndef __CYGWIN__
++ #include "nostdio.h"
+++#endif
++ #else				/* if PERLIO_NOT_STDIO */
++ /*
++  * PERLIO_NOT_STDIO #define'd as 0
+diff -Naur App-Staticperl-1.43.ori/patches/mingw/perl-5.18.2/perl.diff App-Staticperl-1.43.new/patches/mingw/perl-5.18.2/perl.diff
+--- App-Staticperl-1.43.ori/patches/mingw/perl-5.18.2/perl.diff	1970-01-01 01:00:00.000000000 +0100
++++ App-Staticperl-1.43.new/patches/mingw/perl-5.18.2/perl.diff	2014-04-21 02:14:13.162433000 +0200
+@@ -0,0 +1,217 @@
++diff -Naur perl-5.18.2.ori/Configure perl-5.18.2/Configure
++--- perl-5.18.2.ori/Configure	2014-04-20 17:28:14.608875800 +0200
+++++ perl-5.18.2/Configure	2014-04-21 02:14:06.760620100 +0200
++@@ -30,6 +30,7 @@
++ 
++ # Generated on Wed May  8 15:28:09 CEST 2013 [metaconfig 3.5 PL0]
++ # (with additional metaconfig patches by perlbug@perl.org)
+++#set -x
++ 
++ cat >c1$$ <<EOF
++ ARGGGHHHH!!!!!
++@@ -22579,6 +22580,9 @@
++ shift
++ avail_ext="$*"
++ 
+++echo "----------------------- avail ----------------------"
+++echo $avail_ext
+++
++ case "$onlyextensions" in
++ '') ;;
++ *)  keepextensions=''
++@@ -22626,6 +22630,10 @@
++ shift
++ nonxs_ext="$*"
++ 
+++echo "------------------ usedl ---------------------"
+++echo $usedl
+++
+++
++ case $usedl in
++ $define)
++ 	$cat <<EOM
++@@ -22713,14 +22721,30 @@
++ Note that DynaLoader is always built and need not be mentioned here.
++ 
++ EOM
+++
+++echo "----------------------- static now ----------------------"
+++echo $static_ext
+++
++ 	case "$static_ext" in
++ 	'') dflt="$avail_ext" ;;
++-	*)	dflt="$static_ext"
++-		# Perhaps we are reusing an old out-of-date config.sh.
++-		case "$hint" in
++-		previous)
++-			if test X"$static_ext" != X"$avail_ext"; then
++-				$cat <<EOM
+++	*)	
+++		case "$osname" in
+++		cygwin) 
+++			case "$static_ext" in
+++			    # win32core comes from hints/cygwin.sh
+++			    'Win32CORE') 
+++				dflt="`echo $avail_ext | sed -e 's@Win32API/File@ @' -e 's@Win32@ @' `" ;;
+++			    *)
+++				dflt="$avail_ext" ;;
+++			esac
+++			;;
+++		*)
+++			dflt="$static_ext"
+++			# Perhaps we are reusing an old out-of-date config.sh.
+++			case "$hint" in
+++			    previous)
+++				if test X"$static_ext" != X"$avail_ext"; then
+++				    $cat <<EOM
++ NOTICE:  Your previous config.sh list may be incorrect.
++ The extensions now available to you are
++ 	${avail_ext}
++@@ -22728,10 +22752,14 @@
++ 	${static_ext}
++ 
++ EOM
++-			fi
+++				fi
+++				;;
+++			esac
++ 			;;
+++
++ 		esac
++ 		;;
+++
++ 	esac
++ 	: Exclude those that are not xs extensions
++ 	case "$dflt" in
++diff -Naur perl-5.18.2.ori/cpan/Win32/Win32.xs perl-5.18.2/cpan/Win32/Win32.xs
++--- perl-5.18.2.ori/cpan/Win32/Win32.xs	2014-04-20 17:28:16.992012100 +0200
+++++ perl-5.18.2/cpan/Win32/Win32.xs	2014-04-20 19:17:14.677946300 +0200
++@@ -1,4 +1,7 @@
++ #include <wctype.h>
+++#define  WIN32_LEAN_AND_MEAN
+++#define _GNU_H_WINDOWS32_SOCKETS
+++#include <winsock2.h>
++ #include <windows.h>
++ #include <shlobj.h>
++ 
++diff -Naur perl-5.18.2.ori/win32/makefile.mk perl-5.18.2/win32/makefile.mk
++--- perl-5.18.2.ori/win32/makefile.mk	2014-04-20 17:28:19.662164800 +0200
+++++ perl-5.18.2/win32/makefile.mk	2014-04-20 20:33:52.167295900 +0200
++@@ -63,21 +63,21 @@
++ # uncomment to enable multiple interpreters.  This is need for fork()
++ # emulation and for thread support.
++ #
++-USE_MULTI	*= define
+++#USE_MULTI	*= define
++ 
++ #
++ # Interpreter cloning/threads; now reasonably complete.
++ # This should be enabled to get the fork() emulation.  
++ # This needs USE_MULTI above.
++ #
++-USE_ITHREADS	*= define
+++#USE_ITHREADS	*= define
++ 
++ #
++ # uncomment to enable the implicit "host" layer for all system calls
++ # made by perl.  This needs USE_MULTI above.  
++ # This is also needed to get fork().
++ #
++-USE_IMP_SYS	*= define
+++#USE_IMP_SYS	*= define
++ 
++ #
++ # Comment out next assign to disable perl's I/O subsystem and use compiler's 
++@@ -85,7 +85,7 @@
++ # then get a number of fails from make test i.e. bugs - complain to them not us ;-). 
++ # You will also be unable to take full advantage of perl5.8's support for multiple 
++ # encodings and may see lower IO performance. You have been warned.
++-USE_PERLIO	*= define
+++#USE_PERLIO	*= define
++ 
++ #
++ # Comment this out if you don't want to enable large file support for
++@@ -134,7 +134,7 @@
++ # If not enabled, we automatically try to use maximum optimization
++ # with all compilers that are known to have a working optimizer.
++ #
++-#CFG		*= Debug
+++CFG		*= Debug
++ 
++ #
++ # uncomment to enable linking with setargv.obj under the Visual C
++@@ -152,14 +152,14 @@
++ # extensions if you change the default.  Currently, this cannot be enabled
++ # if you ask for USE_IMP_SYS above.
++ #
++-#PERL_MALLOC	*= define
+++PERL_MALLOC	*= define
++ 
++ #
++ # set this to enable debugging mstats
++ # This must be enabled to use the Devel::Peek::mstat() function.  This cannot
++ # be enabled without PERL_MALLOC as well.
++ #
++-#DEBUG_MSTATS	*= define
+++DEBUG_MSTATS	*= define
++ 
++ #
++ # set this to additionally provide a statically linked perl-static.exe.
++@@ -168,7 +168,7 @@
++ # variables below. A static library perl518s.lib will also be created.
++ # Ordinary perl.exe is not affected by this option.
++ #
++-#BUILD_STATIC	*= define
+++BUILD_STATIC	*= define
++ 
++ #
++ # in addition to BUILD_STATIC the option ALL_STATIC makes *every*
++@@ -177,7 +177,7 @@
++ # is to have proper linking set so as to be able to create miscellaneous
++ # executables with different built-in extensions
++ #
++-#ALL_STATIC	*= define
+++ALL_STATIC	*= define
++ 
++ #
++ # set the install locations of the compiler include/libraries
++@@ -1250,10 +1250,10 @@
++ 
++ $(PERLEXESTATIC): $(PERLSTATICLIB) $(CONFIGPM) $(PERLEXEST_OBJ) $(PERLEXE_RES)
++ .IF "$(CCTYPE)" == "GCC"
++-	$(LINK32) -mconsole -o $@ $(BLINK_FLAGS) \
+++	$(LINK32) -mconsole -o $@ $(BLINK_FLAGS) -Wl,-( \
++ 	    $(mktmp $(LKPRE) $(shell @type Extensions_static) \
++ 		$(PERLSTATICLIB) $(LIBFILES) $(PERLEXEST_OBJ) \
++-		$(PERLEXE_RES) $(LKPOST))
+++		$(PERLEXE_RES) $(LKPOST)) -Wl,-) 
++ .ELSE
++ 	$(LINK32) -subsystem:console -out:$@ $(BLINK_FLAGS) \
++ 	    @Extensions_static $(PERLSTATICLIB) /PDB:NONE \
++diff -Naur perl-5.18.2.ori/win32/perllib.c perl-5.18.2/win32/perllib.c
++--- perl-5.18.2.ori/win32/perllib.c	2014-04-20 17:28:19.667165100 +0200
+++++ perl-5.18.2/win32/perllib.c	2014-04-20 17:47:26.582764900 +0200
++@@ -302,7 +302,7 @@
++ EXTERN_C		/* GCC in C++ mode mangles the name, otherwise */
++ #endif
++ BOOL APIENTRY
++-DllMain(HANDLE hModule,		/* DLL module handle */
+++DllMain(HINSTANCE hModule,		/* DLL module handle */
++ 	DWORD fdwReason,	/* reason called */
++ 	LPVOID lpvReserved)	/* reserved */
++ { 
++diff -Naur perl-5.18.2.ori/win32/win32.h perl-5.18.2/win32/win32.h
++--- perl-5.18.2.ori/win32/win32.h	2014-04-20 17:28:19.671165300 +0200
+++++ perl-5.18.2/win32/win32.h	2014-04-20 19:01:53.592263300 +0200
++@@ -122,8 +122,11 @@
++ #endif
++ 
++ #define  WIN32_LEAN_AND_MEAN
+++#define _GNU_H_WINDOWS32_SOCKETS
+++#include <winsock2.h>
++ #include <windows.h>
++ 
+++
++ /*
++  * Bug in winbase.h in mingw-w64 4.4.0-1 at least... they
++  * do #define GetEnvironmentStringsA GetEnvironmentStrings and fail
+diff -Naur App-Staticperl-1.43.ori/staticperl.sh App-Staticperl-1.43.new/staticperl.sh
+--- App-Staticperl-1.43.ori/staticperl.sh	2014-04-20 09:39:01.290698800 +0200
++++ App-Staticperl-1.43.new/staticperl.sh	2014-04-21 01:04:47.663481800 +0200
+@@ -2,17 +2,21 @@
+ 
+ #############################################################################
+ # configuration to fill in (or to replace in your .staticperlrc)
++SCRIPTPATH=`dirname $0`
++SCRIPTPATH=`readlink -f $SCRIPTPATH`
+ 
+-STATICPERL=~/.staticperl
++if [ "x"$STATICPERL == "x" ]; then
++    STATICPERL=~/.staticperl
++fi
+ CPAN=http://mirror.netcologne.de/cpan # which mirror to use
+ EMAIL="read the documentation <rtfm@example.org>"
+ DLCACHE=
+ 
+ # perl build variables
+ MAKE=make
+-PERL_VERSION=5.12.4 # 5.8.9 is also a good choice
+-PERL_CC=cc
+-PERL_CONFIGURE="" # additional Configure arguments
++PERL_VERSION=5.18.2 # 5.8.9 is also a good choice
++PERL_CC=gcc
++PERL_CONFIGURE="-DDEBUGGING" # additional Configure arguments
+ PERL_CCFLAGS="-g -DPERL_DISABLE_PMC -DPERL_ARENA_SIZE=16376 -DNO_PERL_MALLOC_ENV -D_GNU_SOURCE -DNDEBUG"
+ PERL_OPTIMIZE="-Os" # -Os -ffunction-sections -fdata-sections -finline-limit=8 -ffast-math"
+ 
+@@ -36,6 +40,14 @@
+ PERL_LDFLAGS=
+ PERL_LIBS="-lm -lcrypt" # perl loves to add lotsa crap itself
+ 
++case `uname` in
++    MINGW* )
++	PERL_LIBS="-lm -lcrypt32" 
++	# note: install msys-libcrypt devel first
++	PERL_LDFLAGS="-L/mingw/lib" 
++	;;
++esac
++
+ # some configuration options for modules
+ PERL_MM_USE_DEFAULT=1
+ PERL_MM_OPT="MAN1PODS= MAN3PODS="
+@@ -193,6 +205,24 @@
+       chmod -R u+w unpack/perl-$PERL_VERSION
+       mv unpack/perl-$PERL_VERSION perl-$PERL_VERSION
+       rmdir -p unpack
++      
++      case `uname` in
++          CYGWIN* )
++	      echo "*** Try patch for cygwin in `pwd`/$SCRIPTPATH/patches/cygwin/perl-$PERL_VERSION"
++	      if [ -d $SCRIPTPATH/patches/cygwin/perl-$PERL_VERSION ]; then
++		  echo "*** Apply patch perl-$PERL_VERSION.patch"
++		  cat $SCRIPTPATH/patches/cygwin/perl-$PERL_VERSION/*diff | patch -d perl-$PERL_VERSION
++	      fi
++            ;;
++          MINGW* )
++	      echo "*** Try patch for mingw in `pwd`/$SCRIPTPATH/patches/mingw/perl-$PERL_VERSION"
++	      if [ -d $SCRIPTPATH/patches/mingw/perl-$PERL_VERSION ]; then
++		  echo "*** Apply patch perl-$PERL_VERSION.patch"
++		  cat $SCRIPTPATH/patches/mingw/perl-$PERL_VERSION/*diff | patch -p1 -d perl-$PERL_VERSION
++	      fi
++            ;;
++      esac
++      
+    fi
+ }
+ 
+@@ -231,6 +261,8 @@
+ 
+ configure() {
+    fetch
++   
++   echo "------- fetch finished --------"
+ 
+    rcd "$STATICPERL/src/perl-$PERL_VERSION"
+ 
+@@ -243,21 +275,67 @@
+    rm -f "$PERL_PREFIX/staticstamp.install"
+ 
+    "$MAKE" distclean >/dev/null 2>&1
++   echo "------- distclean finished --------"
+ 
+    sedreplace '/^#define SITELIB/d' config_h.SH
+ 
+    # I hate them for this
+    grep -q -- -fstack-protector Configure && \
+       sedreplace 's/-fstack-protector/-fno-stack-protector/g' Configure
++   echo "------- grep1 finished --------"
+ 
+    # what did that bloke think
+    grep -q -- usedl=.define hints/darwin.sh && \
+       sedreplace '/^usedl=.define.;$/d' hints/darwin.sh
++   echo "------- grep2 finished --------"
+ 
+    preconfigure || fatal "preconfigure hook failed"
++   echo "------- preconfigure --------"
++
++   setext=""
++   case `uname` in
++   MINGW*|CYGWIN*)
++       # trace configure \
++       bash Configure -Duselargefiles \
++                -Uuse64bitint \
++                -Dusemymalloc=n \
++                -Uusedl \
++                -Uusethreads \
++                -Uuseithreads \
++                -Uusemultiplicity \
++                -Uusesfio \
++                -Uuseshrplib \
++                -Uinstallusrbinperl \
++                -A ccflags=" $PERL_CCFLAGS" \
++                -Dcc="$PERL_CC" \
++                -Doptimize="$PERL_OPTIMIZE" \
++                -Dldflags="$PERL_LDFLAGS" \
++                -Dlibs="$PERL_LIBS" \
++                -Dprefix="$PERL_PREFIX" \
++                -Dbin="$PERL_PREFIX/bin" \
++                -Dprivlib="$PERL_PREFIX/lib" \
++                -Darchlib="$PERL_PREFIX/lib" \
++                -Uusevendorprefix \
++                -Dsitelib="$PERL_PREFIX/lib" \
++                -Dsitearch="$PERL_PREFIX/lib" \
++                -Uman1dir \
++                -Uman3dir \
++                -Usiteman1dir \
++                -Usiteman3dir \
++                -Dpager=/usr/bin/less \
++                -Demail="$EMAIL" \
++                -Dcf_email="$EMAIL" \
++                -Dcf_by="$EMAIL" \
++                $PERL_CONFIGURE \
++                -Duseperlio \
++                -dE || configure_failure
++
++                #-Dstatic_ext="Win32CORE Cwd re Digest/MD5 Digest/SHA File/Glob Encode Fcntl IO  " \
+ 
+-#   trace configure \
+-   sh Configure -Duselargefiles \
++       ;;
++   Linux*) 
++       # trace configure \
++       bash Configure -Duselargefiles \
+                 -Uuse64bitint \
+                 -Dusemymalloc=n \
+                 -Uusedl \
+@@ -291,6 +369,17 @@
+                 -Duseperlio \
+                 -dE || configure_failure
+ 
++                #-Dstatic_ext="Cwd re Digest/MD5 Digest/SHA File/Glob Encode Fcntl IO  " \
++       ;;
++   *)
++   ;;
++   esac 
++
++   echo "------- start configure --------"
++
++
++   echo "------- end configure --------"
++
+    sedreplace '
+       s/-Wl,--no-gc-sections/-Wl,--gc-sections/g
+       s/ *-fno-stack-protector */ /g
+@@ -298,7 +387,12 @@
+ 
+    patchconfig || fatal "patchconfig hook failed"
+ 
++   case `uname` in
++   MINGW*);;
++   *)
+    sh Configure -S || fatal "Configure -S failed"
++   ;;
++   esac
+ 
+    postconfigure || fatal "postconfigure hook failed"
+ 
+@@ -317,9 +411,17 @@
+ }
+ 
+ build() {
++case `uname` in
++   MINGW*)
++   configure
++   rcd "$STATICPERL/src/perl-$PERL_VERSION/win32"
++   ;;
++   *)
+    configure
+-
+    rcd "$STATICPERL/src/perl-$PERL_VERSION"
++   ;;
++esac
++
+ 
+    verblock <<EOF
+ building $STATICPERL/src/perl-$PERL_VERSION
+@@ -327,7 +429,15 @@
+ 
+    rm -f "$PERL_PREFIX/staticstamp.install"
+ 
++case `uname` in
++   MINGW* )
++   dmake.exe   || fatal "make: error while building perl"
++   ;;
++   *)
+    "$MAKE" || fatal "make: error while building perl"
++   ;;
++esac
++
+ 
+    postbuild || fatal "postbuild hook failed"
+ }
