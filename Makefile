@@ -1,37 +1,4 @@
--include build/Makefile.linux.mk
-
-BDIR=
-LDIR=
-TOOL=gcc
-CC=gcc
-AR=ar rcs 
-
-prefix=$(foreach f,$2,$1$f)
-SRC=parse.c
-OBJ=$(SRC:.c=.o)
-
-$(LDIR)libe.a: $(call prefix,$(BDIR),$(OBJ))
-	$(AR) $@ $^
-
-C_TO_O=gcc -g -c -o $1 $2
-
-$(BDIR)%.o: %.c
-	$(call C_TO_O,$@,$^) 
-
-
-	#$(call CCFLAGS_C_TO_D,$@,$^)
-	#	@ $(CC) $(CPPFLAGS) -MM $*.c | sed -e 's@^\(.*\)\.o:@\1.d \1.o:@' > $@
-
-all: $(LDIR)libe.a
-
--include $(wildcard $(call prefix,./,$(OBJ:.o=.d)))
-
-clean:
-	rm -rf .deps/* *.o *.a
-
-compile-perl:
-	perl Makefile.PL LINKTYPE=static MAKEFILE=Makefile.perl.mk
-
+all: static
 
 TMP_PERL=tmp-perl$(shell uname)
 static:
@@ -62,14 +29,6 @@ static:
 		;; \
 	esac; 
 
-#		export PATH=/usr/bin:$$PATH; 					\
-
-
-#	STATICPERL=$(CURDIR)/$(TMP_PERL) bash 
-#	bash ./staticperl.sh clean; \
-	#bash ./staticperl.sh fetch; \
-	tmp-perl/
-
 
 static-gen-diff:
 	-cd tmp-perl; find App-Staticperl-1.43.new | grep ~\$$ |xargs rm $$1
@@ -91,7 +50,6 @@ raw:
 	mkdir -p tmp-perl;
 	cd tmp-perl; \
 	wget https://raw.github.com/arsv/perl-cross/releases/perl-5.18.2-cross-0.8.5.tar.gz
-
 
 ext:
 	perl -MExtUtils::Embed -e xsinit -- -o xsinit.c Socket
