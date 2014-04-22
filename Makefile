@@ -46,6 +46,7 @@ static:
 		rm -rf App-Staticperl-1.43* perl src; wget http://search.cpan.org/CPAN/authors/id/M/ML/MLEHMANN/App-Staticperl-1.43.tar.gz; tar xvf App-Staticperl-1.43.tar.gz; \
 		cat $(CURDIR)/patches/app-staticperl-1.43.patch | patch -p1 -d App-Staticperl-1.43; \
 		cd  $(PREFIX)/App-Staticperl-1.43/; perl -pi -e 's/\r\n/\n/g' *;  					\
+		export LDLOADLIBS="-lcrypt"; \
 		export STATICPERL=$(PREFIX); $(if $(USEDL),export USEDL=$(USEDL);,)\
 		bash ./staticperl.sh build; 	\
 		bash ./staticperl.sh install; 	\
@@ -68,7 +69,8 @@ diff:
 	-cd tmp-perl/src; find . | grep ~\$$ |xargs rm $$1; 
 	-cd tmp-perl/src; \
 	diff -Naur perl-5.18.2.ori perl-5.18.2 > $(CURDIR)/tmp-perl/App-Staticperl-1.43.new/patches/mingw/perl-5.18.2/perl.diff; \
-	diff -Naur perl-5.18.2.ori/Configure perl-5.18.2/Configure > $(CURDIR)/tmp-perl/App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/Configure.diff
+	diff -Naur perl-5.18.2.ori/Configure perl-5.18.2/Configure > $(CURDIR)/tmp-perl/App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/Configure.diff; \
+	diff -Naur perl-5.18.2.ori/ext/B/Makefile.PL perl-5.18.2/ext/B/Makefile.PL > $(CURDIR)/tmp-perl/App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/ext_B_Makefile.patch
 	make static-gen-diff
 
 straw:
