@@ -1,6 +1,6 @@
 diff -Naur App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/Configure.diff App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/Configure.diff
 --- App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/Configure.diff	1970-01-01 01:00:00.000000000 +0100
-+++ App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/Configure.diff	2014-04-22 19:35:17.044203700 +0200
++++ App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/Configure.diff	2014-04-22 19:55:58.064072900 +0200
 @@ -0,0 +1,84 @@
 +--- perl-5.18.2.ori/Configure	2014-04-21 19:08:19.016044900 +0200
 ++++ perl-5.18.2/Configure	2014-04-21 19:07:43.572783100 +0200
@@ -88,7 +88,7 @@ diff -Naur App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/Configure.diff App
 + 	case "$dflt" in
 diff -Naur App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/ext_B_Makefile.patch App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/ext_B_Makefile.patch
 --- App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/ext_B_Makefile.patch	1970-01-01 01:00:00.000000000 +0100
-+++ App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/ext_B_Makefile.patch	2014-04-22 19:35:17.059803700 +0200
++++ App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/ext_B_Makefile.patch	2014-04-22 19:55:58.076073500 +0200
 @@ -0,0 +1,10 @@
 +--- perl-5.18.2.ori/ext/B/Makefile.PL	2014-04-21 19:08:27.377659500 +0200
 ++++ perl-5.18.2/ext/B/Makefile.PL	2014-04-22 18:22:36.660542800 +0200
@@ -102,16 +102,18 @@ diff -Naur App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/ext_B_Makefile.pat
 + 
 diff -Naur App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/ext_POSIX_Makefile.patch App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/ext_POSIX_Makefile.patch
 --- App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/ext_POSIX_Makefile.patch	1970-01-01 01:00:00.000000000 +0100
-+++ App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/ext_POSIX_Makefile.patch	2014-04-22 19:35:17.075403700 +0200
-@@ -0,0 +1,11 @@
++++ App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/ext_POSIX_Makefile.patch	2014-04-22 19:55:58.087074200 +0200
+@@ -0,0 +1,13 @@
 +--- perl-5.18.2.ori/ext/POSIX/Makefile.PL	2014-04-21 19:08:27.596059800 +0200
-++++ perl-5.18.2/ext/POSIX/Makefile.PL	2014-04-22 19:27:08.981293100 +0200
-+@@ -13,6 +13,8 @@
+++++ perl-5.18.2/ext/POSIX/Makefile.PL	2014-04-22 19:55:49.279570400 +0200
++@@ -11,8 +11,9 @@
++ }
++ 
 + my @libs;
+++@libs = ('LIBS' => ["-lcrypt"]);
 + if ($^O ne 'MSWin32') {
-+     @libs = ('LIBS' => ["-lm -lposix -lcposix"]);
-++} else {
-++    @libs = ('LIBS' => ["-lcrypt"]);
++-    @libs = ('LIBS' => ["-lm -lposix -lcposix"]);
+++    @libs = ('LIBS' => ["-lm -lposix -lcposix -lcrypt"]);
 + }
 + WriteMakefile(
 +     NAME	=> 'POSIX',
@@ -1730,8 +1732,8 @@ diff -Naur App-Staticperl-1.43.ori/patches/mingw/perl-5.18.2/makefile.dyn.mk App
 +	$(PERLEXE) -I..\lib ..\utils\perlbug -nok -s "(UNINSTALLED)" -F perl.nok
 diff -Naur App-Staticperl-1.43.ori/patches/mingw/perl-5.18.2/perl.diff App-Staticperl-1.43.new/patches/mingw/perl-5.18.2/perl.diff
 --- App-Staticperl-1.43.ori/patches/mingw/perl-5.18.2/perl.diff	1970-01-01 01:00:00.000000000 +0100
-+++ App-Staticperl-1.43.new/patches/mingw/perl-5.18.2/perl.diff	2014-04-22 19:35:17.028603700 +0200
-@@ -0,0 +1,1837 @@
++++ App-Staticperl-1.43.new/patches/mingw/perl-5.18.2/perl.diff	2014-04-22 19:55:58.045071800 +0200
+@@ -0,0 +1,1839 @@
 +diff -Naur perl-5.18.2.ori/Configure perl-5.18.2/Configure
 +--- perl-5.18.2.ori/Configure	2014-04-21 19:08:19.016044900 +0200
 ++++ perl-5.18.2/Configure	2014-04-21 19:07:43.572783100 +0200
@@ -1841,13 +1843,15 @@ diff -Naur App-Staticperl-1.43.ori/patches/mingw/perl-5.18.2/perl.diff App-Stati
 + 
 +diff -Naur perl-5.18.2.ori/ext/POSIX/Makefile.PL perl-5.18.2/ext/POSIX/Makefile.PL
 +--- perl-5.18.2.ori/ext/POSIX/Makefile.PL	2014-04-21 19:08:27.596059800 +0200
-++++ perl-5.18.2/ext/POSIX/Makefile.PL	2014-04-22 19:27:08.981293100 +0200
-+@@ -13,6 +13,8 @@
+++++ perl-5.18.2/ext/POSIX/Makefile.PL	2014-04-22 19:55:49.279570400 +0200
++@@ -11,8 +11,9 @@
++ }
++ 
 + my @libs;
+++@libs = ('LIBS' => ["-lcrypt"]);
 + if ($^O ne 'MSWin32') {
-+     @libs = ('LIBS' => ["-lm -lposix -lcposix"]);
-++} else {
-++    @libs = ('LIBS' => ["-lcrypt"]);
++-    @libs = ('LIBS' => ["-lm -lposix -lcposix"]);
+++    @libs = ('LIBS' => ["-lm -lposix -lcposix -lcrypt"]);
 + }
 + WriteMakefile(
 +     NAME	=> 'POSIX',
