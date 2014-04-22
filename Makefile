@@ -70,7 +70,8 @@ diff:
 	-cd tmp-perl/src; \
 	diff -Naur perl-5.18.2.ori perl-5.18.2 > $(CURDIR)/tmp-perl/App-Staticperl-1.43.new/patches/mingw/perl-5.18.2/perl.diff; \
 	diff -Naur perl-5.18.2.ori/Configure perl-5.18.2/Configure > $(CURDIR)/tmp-perl/App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/Configure.diff; \
-	diff -Naur perl-5.18.2.ori/ext/B/Makefile.PL perl-5.18.2/ext/B/Makefile.PL > $(CURDIR)/tmp-perl/App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/ext_B_Makefile.patch
+	diff -Naur perl-5.18.2.ori/ext/B/Makefile.PL perl-5.18.2/ext/B/Makefile.PL > $(CURDIR)/tmp-perl/App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/ext_B_Makefile.patch; \
+	diff -Naur perl-5.18.2.ori/ext/POSIX/Makefile.PL perl-5.18.2/ext/POSIX/Makefile.PL > $(CURDIR)/tmp-perl/App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/ext_POSIX_Makefile.patch
 	make static-gen-diff
 
 straw:

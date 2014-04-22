@@ -1,6 +1,6 @@
 diff -Naur App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/Configure.diff App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/Configure.diff
 --- App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/Configure.diff	1970-01-01 01:00:00.000000000 +0100
-+++ App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/Configure.diff	2014-04-22 19:27:16.330713500 +0200
++++ App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/Configure.diff	2014-04-22 19:35:17.044203700 +0200
 @@ -0,0 +1,84 @@
 +--- perl-5.18.2.ori/Configure	2014-04-21 19:08:19.016044900 +0200
 ++++ perl-5.18.2/Configure	2014-04-21 19:07:43.572783100 +0200
@@ -88,7 +88,7 @@ diff -Naur App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/Configure.diff App
 + 	case "$dflt" in
 diff -Naur App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/ext_B_Makefile.patch App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/ext_B_Makefile.patch
 --- App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/ext_B_Makefile.patch	1970-01-01 01:00:00.000000000 +0100
-+++ App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/ext_B_Makefile.patch	2014-04-22 19:27:16.342714200 +0200
++++ App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/ext_B_Makefile.patch	2014-04-22 19:35:17.059803700 +0200
 @@ -0,0 +1,10 @@
 +--- perl-5.18.2.ori/ext/B/Makefile.PL	2014-04-21 19:08:27.377659500 +0200
 ++++ perl-5.18.2/ext/B/Makefile.PL	2014-04-22 18:22:36.660542800 +0200
@@ -100,6 +100,21 @@ diff -Naur App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/ext_B_Makefile.pat
 +     realclean	    => {FILES=> 'const-c.inc const-xs.inc'},
 + );
 + 
+diff -Naur App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/ext_POSIX_Makefile.patch App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/ext_POSIX_Makefile.patch
+--- App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/ext_POSIX_Makefile.patch	1970-01-01 01:00:00.000000000 +0100
++++ App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/ext_POSIX_Makefile.patch	2014-04-22 19:35:17.075403700 +0200
+@@ -0,0 +1,11 @@
++--- perl-5.18.2.ori/ext/POSIX/Makefile.PL	2014-04-21 19:08:27.596059800 +0200
+++++ perl-5.18.2/ext/POSIX/Makefile.PL	2014-04-22 19:27:08.981293100 +0200
++@@ -13,6 +13,8 @@
++ my @libs;
++ if ($^O ne 'MSWin32') {
++     @libs = ('LIBS' => ["-lm -lposix -lcposix"]);
+++} else {
+++    @libs = ('LIBS' => ["-lcrypt"]);
++ }
++ WriteMakefile(
++     NAME	=> 'POSIX',
 diff -Naur App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/perlio.h.diff App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/perlio.h.diff
 --- App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/perlio.h.diff	1970-01-01 01:00:00.000000000 +0100
 +++ App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/perlio.h.diff	2014-04-21 16:40:10.885281300 +0200
@@ -1715,7 +1730,7 @@ diff -Naur App-Staticperl-1.43.ori/patches/mingw/perl-5.18.2/makefile.dyn.mk App
 +	$(PERLEXE) -I..\lib ..\utils\perlbug -nok -s "(UNINSTALLED)" -F perl.nok
 diff -Naur App-Staticperl-1.43.ori/patches/mingw/perl-5.18.2/perl.diff App-Staticperl-1.43.new/patches/mingw/perl-5.18.2/perl.diff
 --- App-Staticperl-1.43.ori/patches/mingw/perl-5.18.2/perl.diff	1970-01-01 01:00:00.000000000 +0100
-+++ App-Staticperl-1.43.new/patches/mingw/perl-5.18.2/perl.diff	2014-04-22 19:27:16.310712300 +0200
++++ App-Staticperl-1.43.new/patches/mingw/perl-5.18.2/perl.diff	2014-04-22 19:35:17.028603700 +0200
 @@ -0,0 +1,1837 @@
 +diff -Naur perl-5.18.2.ori/Configure perl-5.18.2/Configure
 +--- perl-5.18.2.ori/Configure	2014-04-21 19:08:19.016044900 +0200
@@ -3556,7 +3571,7 @@ diff -Naur App-Staticperl-1.43.ori/patches/mingw/perl-5.18.2/perl.diff App-Stati
 +  * do #define GetEnvironmentStringsA GetEnvironmentStrings and fail
 diff -Naur App-Staticperl-1.43.ori/staticperl.sh App-Staticperl-1.43.new/staticperl.sh
 --- App-Staticperl-1.43.ori/staticperl.sh	2012-04-18 14:41:14.000000000 +0200
-+++ App-Staticperl-1.43.new/staticperl.sh	2014-04-22 19:00:36.758223200 +0200
++++ App-Staticperl-1.43.new/staticperl.sh	2014-04-22 19:29:54.136739500 +0200
 @@ -2,17 +2,21 @@
  
  #############################################################################
@@ -3565,10 +3580,11 @@ diff -Naur App-Staticperl-1.43.ori/staticperl.sh App-Staticperl-1.43.new/staticp
 +SCRIPTPATH=`readlink -f $SCRIPTPATH`
  
 -STATICPERL=~/.staticperl
+-CPAN=http://mirror.netcologne.de/cpan # which mirror to use
 +if [ "x"$STATICPERL == "x" ]; then
 +    STATICPERL=~/.staticperl
 +fi
- CPAN=http://mirror.netcologne.de/cpan # which mirror to use
++CPAN=http://www.cpan.org/  # which mirror to use
  EMAIL="read the documentation <rtfm@example.org>"
  DLCACHE=
  
