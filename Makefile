@@ -2,7 +2,7 @@ all:
 	case x$(OS) in \
 	xWindows*) \
 		case x$(shell uname) in \
-		xCYGWIN*)
+		xCYGWIN*)\
 			make $(if $(STATICPERLPREFIX),STATICPERL=$(STATICPERLPREFIX)/perl-cygwin-static,)         static;\
 			make $(if $(STATICPERLPREFIX),STATICPERL=$(STATICPERLPREFIX)/perl-cygwin-dyn,   ) USEDL=y static;;\
 		esac; \
@@ -32,7 +32,7 @@ static:
 		mkdir -p strawberry; cd strawberry; unzip -n ../strawberry-perl-5.18.2.2-64bit-portable.zip; cd ..;			\
 		rm -rf App-Staticperl-1.43* perl src; wget http://search.cpan.org/CPAN/authors/id/M/ML/MLEHMANN/App-Staticperl-1.43.tar.gz; tar xvf App-Staticperl-1.43.tar.gz; \
 		cat $(CURDIR)/patches/app-staticperl-1.43.patch | patch -p1 -d App-Staticperl-1.43; \
-		cd App-Staticperl-1.43/;  						\
+		cd App-Staticperl-1.43/; perl -pi -e 's/\r\n/\n/g' *;  						\
 		export PATH=/usr/bin:/mingw/bin:$$PATH; \
 		$(if $(FORCEOS),export FORCEOS=$(FORCEOS);,) \
 		STATICPERL=$(PREFIX) bash ./staticperl.sh fetch; 		\
@@ -45,7 +45,7 @@ static:
 		rm -rf $(PREFIX)/*; \
 		rm -rf App-Staticperl-1.43* perl src; wget http://search.cpan.org/CPAN/authors/id/M/ML/MLEHMANN/App-Staticperl-1.43.tar.gz; tar xvf App-Staticperl-1.43.tar.gz; \
 		cat $(CURDIR)/patches/app-staticperl-1.43.patch | patch -p1 -d App-Staticperl-1.43; \
-		cd  $(PREFIX)/App-Staticperl-1.43/;  					\
+		cd  $(PREFIX)/App-Staticperl-1.43/; perl -pi -e 's/\r\n/\n/g' *;  					\
 		export STATICPERL=$(PREFIX); $(if $(USEDL),export USEDL=$(USEDL);,)\
 		bash ./staticperl.sh build; 	\
 		bash ./staticperl.sh install; 	\
