@@ -1,9 +1,9 @@
 diff -Naur App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/Configure.diff App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/Configure.diff
 --- App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/Configure.diff	1970-01-01 01:00:00.000000000 +0100
-+++ App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/Configure.diff	2014-04-22 19:55:58.064072900 +0200
-@@ -0,0 +1,84 @@
++++ App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/Configure.diff	2014-04-22 20:11:53.793737500 +0200
+@@ -0,0 +1,119 @@
 +--- perl-5.18.2.ori/Configure	2014-04-21 19:08:19.016044900 +0200
-++++ perl-5.18.2/Configure	2014-04-21 19:07:43.572783100 +0200
+++++ perl-5.18.2/Configure	2014-04-22 20:11:47.854397800 +0200
 +@@ -30,6 +30,7 @@
 + 
 + # Generated on Wed May  8 15:28:09 CEST 2013 [metaconfig 3.5 PL0]
@@ -33,7 +33,42 @@ diff -Naur App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/Configure.diff App
 + case $usedl in
 + $define)
 + 	$cat <<EOM
-+@@ -22713,14 +22721,30 @@
++@@ -22651,6 +22659,7 @@
++ 		dflt="$*"
++ 		;;
++ 	*)	dflt="$dynamic_ext"
+++
++ 		# Perhaps we are reusing an old out-of-date config.sh.
++ 		case "$hint" in
++ 		previous)
++@@ -22666,17 +22675,26 @@
++ 			fi
++ 			;;
++ 		esac
+++
++ 		;;
++ 	esac
++ 	case "$dflt" in
++ 	'')	dflt=none;;
++ 	esac
++ 	rp="What extensions do you wish to load dynamically?"
+++
+++	case "$osname" in
+++	    cygwin) 
+++		dflt="`echo $dflt | sed -e 's@Win32API/File@ @' -e 's@Win32 @ @' `" ;;
+++	esac
+++
+++
++ 	. ./myread
++ 	case "$ans" in
++ 	none) dynamic_ext=' ' ;;
++ 	*) dynamic_ext="$ans" ;;
++ 	esac
+++	
++ 
++ 	case "$static_ext" in
++ 	'')
++@@ -22713,14 +22731,30 @@
 + Note that DynaLoader is always built and need not be mentioned here.
 + 
 + EOM
@@ -70,7 +105,7 @@ diff -Naur App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/Configure.diff App
 + NOTICE:  Your previous config.sh list may be incorrect.
 + The extensions now available to you are
 + 	${avail_ext}
-+@@ -22728,10 +22752,14 @@
++@@ -22728,10 +22762,14 @@
 + 	${static_ext}
 + 
 + EOM
@@ -88,7 +123,7 @@ diff -Naur App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/Configure.diff App
 + 	case "$dflt" in
 diff -Naur App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/ext_B_Makefile.patch App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/ext_B_Makefile.patch
 --- App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/ext_B_Makefile.patch	1970-01-01 01:00:00.000000000 +0100
-+++ App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/ext_B_Makefile.patch	2014-04-22 19:55:58.076073500 +0200
++++ App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/ext_B_Makefile.patch	2014-04-22 20:11:53.804738100 +0200
 @@ -0,0 +1,10 @@
 +--- perl-5.18.2.ori/ext/B/Makefile.PL	2014-04-21 19:08:27.377659500 +0200
 ++++ perl-5.18.2/ext/B/Makefile.PL	2014-04-22 18:22:36.660542800 +0200
@@ -102,7 +137,7 @@ diff -Naur App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/ext_B_Makefile.pat
 + 
 diff -Naur App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/ext_POSIX_Makefile.patch App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/ext_POSIX_Makefile.patch
 --- App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/ext_POSIX_Makefile.patch	1970-01-01 01:00:00.000000000 +0100
-+++ App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/ext_POSIX_Makefile.patch	2014-04-22 19:55:58.087074200 +0200
++++ App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/ext_POSIX_Makefile.patch	2014-04-22 20:11:53.816738800 +0200
 @@ -0,0 +1,13 @@
 +--- perl-5.18.2.ori/ext/POSIX/Makefile.PL	2014-04-21 19:08:27.596059800 +0200
 ++++ perl-5.18.2/ext/POSIX/Makefile.PL	2014-04-22 19:55:49.279570400 +0200
@@ -1732,11 +1767,11 @@ diff -Naur App-Staticperl-1.43.ori/patches/mingw/perl-5.18.2/makefile.dyn.mk App
 +	$(PERLEXE) -I..\lib ..\utils\perlbug -nok -s "(UNINSTALLED)" -F perl.nok
 diff -Naur App-Staticperl-1.43.ori/patches/mingw/perl-5.18.2/perl.diff App-Staticperl-1.43.new/patches/mingw/perl-5.18.2/perl.diff
 --- App-Staticperl-1.43.ori/patches/mingw/perl-5.18.2/perl.diff	1970-01-01 01:00:00.000000000 +0100
-+++ App-Staticperl-1.43.new/patches/mingw/perl-5.18.2/perl.diff	2014-04-22 19:55:58.045071800 +0200
-@@ -0,0 +1,1839 @@
++++ App-Staticperl-1.43.new/patches/mingw/perl-5.18.2/perl.diff	2014-04-22 20:11:53.774736400 +0200
+@@ -0,0 +1,1874 @@
 +diff -Naur perl-5.18.2.ori/Configure perl-5.18.2/Configure
 +--- perl-5.18.2.ori/Configure	2014-04-21 19:08:19.016044900 +0200
-++++ perl-5.18.2/Configure	2014-04-21 19:07:43.572783100 +0200
+++++ perl-5.18.2/Configure	2014-04-22 20:11:47.854397800 +0200
 +@@ -30,6 +30,7 @@
 + 
 + # Generated on Wed May  8 15:28:09 CEST 2013 [metaconfig 3.5 PL0]
@@ -1766,7 +1801,42 @@ diff -Naur App-Staticperl-1.43.ori/patches/mingw/perl-5.18.2/perl.diff App-Stati
 + case $usedl in
 + $define)
 + 	$cat <<EOM
-+@@ -22713,14 +22721,30 @@
++@@ -22651,6 +22659,7 @@
++ 		dflt="$*"
++ 		;;
++ 	*)	dflt="$dynamic_ext"
+++
++ 		# Perhaps we are reusing an old out-of-date config.sh.
++ 		case "$hint" in
++ 		previous)
++@@ -22666,17 +22675,26 @@
++ 			fi
++ 			;;
++ 		esac
+++
++ 		;;
++ 	esac
++ 	case "$dflt" in
++ 	'')	dflt=none;;
++ 	esac
++ 	rp="What extensions do you wish to load dynamically?"
+++
+++	case "$osname" in
+++	    cygwin) 
+++		dflt="`echo $dflt | sed -e 's@Win32API/File@ @' -e 's@Win32 @ @' `" ;;
+++	esac
+++
+++
++ 	. ./myread
++ 	case "$ans" in
++ 	none) dynamic_ext=' ' ;;
++ 	*) dynamic_ext="$ans" ;;
++ 	esac
+++	
++ 
++ 	case "$static_ext" in
++ 	'')
++@@ -22713,14 +22731,30 @@
 + Note that DynaLoader is always built and need not be mentioned here.
 + 
 + EOM
@@ -1803,7 +1873,7 @@ diff -Naur App-Staticperl-1.43.ori/patches/mingw/perl-5.18.2/perl.diff App-Stati
 + NOTICE:  Your previous config.sh list may be incorrect.
 + The extensions now available to you are
 + 	${avail_ext}
-+@@ -22728,10 +22752,14 @@
++@@ -22728,10 +22762,14 @@
 + 	${static_ext}
 + 
 + EOM
