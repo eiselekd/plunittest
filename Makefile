@@ -14,7 +14,7 @@ all:
 	esac
 
 all-opt:
-	make STATICPERLPREFIX=/opt/ all
+	make STATICPERLPREFIX=/opt all
 
 
 ISOS?=$(shell uname)
