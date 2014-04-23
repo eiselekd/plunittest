@@ -47,7 +47,8 @@ static:
 		export PATH=$(PREFIX)/strawberry/c/bin:/usr/bin:/mingw/bin:$$PATH; \
 		cd $(PREFIX)/src/perl-5.18.2/win32; $(if $(USEDL),cp makefile.dyn.mk makefile.mk;,) \
 		sed -ri 's@--INST--@$(subst \,\\,$(shell cygpath -w $(PREFIX)))\\perl@' makefile.mk; \
-		unset SHELL; cmd.exe /c dmake.exe; cmd.exe /c dmake.exe install; 	\
+		unset SHELL; cmd.exe /c dmake.exe; cmd.exe /c dmake.exe install; \
+		export PATH=$(PREFIX)/perl/bin:$$PATH; cd $(PREFIX)/perl/bin; ./perl -MConfig -e 'use Data::Dumper; print (Dumper(\%Config));' > config.txt;	\
 		;; \
 	  Darwin*|CYGWIN*|Linux*) \
 		rm -rf $(PREFIX)/*; \
@@ -59,6 +60,7 @@ static:
 		export STATICPERL=$(PREFIX); $(if $(USEDL),export USEDL=$(USEDL);,)\
 		bash ./staticperl.sh build   2>&1 | tee $(PREFIX)/log_build.txt; 	\
 		bash ./staticperl.sh install 2>&1 | tee $(PREFIX)/log_install.txt; 	\
+		export PATH=$(PREFIX)/perl/bin:$$PATH; cd $(PREFIX)/perl/bin; ./perl -MConfig -e 'use Data::Dumper; print (Dumper(\%Config));' > config.txt;	\
 		;; \
 	esac; 
 
@@ -96,3 +98,6 @@ ext:
 	perl -MExtUtils::Embed -e ldopts -- -std Msql -- -L/usr/msql/lib -lmsql
 	perl -MExtUtils::Embed -e perl_inc
 
+p:
+	export PATH=opt/perl-win32-dyn/perl/bin:$$PATH; cc -o interp interp.c `perl -MExtUtils::Embed -e ccopts -e ldopts`
+	export PATH=opt/perl-win32-static/perl/bin:$$PATH; cc -o interp-static interp.c `perl -MExtUtils::Embed -e ccopts -e ldopts`

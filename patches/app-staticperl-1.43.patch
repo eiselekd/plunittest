@@ -1,6 +1,6 @@
 diff -Naur App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/Configure.diff App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/Configure.diff
 --- App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/Configure.diff	1970-01-01 01:00:00.000000000 +0100
-+++ App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/Configure.diff	2014-04-22 22:22:54.828362900 +0200
++++ App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/Configure.diff	2014-04-23 18:24:56.604981200 +0200
 @@ -0,0 +1,118 @@
 +--- perl-5.18.2.ori/Configure	2014-04-21 19:08:19.016044900 +0200
 ++++ perl-5.18.2/Configure	2014-04-22 20:12:17.252079200 +0200
@@ -122,7 +122,7 @@ diff -Naur App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/Configure.diff App
 + 	case "$dflt" in
 diff -Naur App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/ext_B_Makefile.patch App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/ext_B_Makefile.patch
 --- App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/ext_B_Makefile.patch	1970-01-01 01:00:00.000000000 +0100
-+++ App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/ext_B_Makefile.patch	2014-04-22 22:22:54.841363700 +0200
++++ App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/ext_B_Makefile.patch	2014-04-23 18:24:56.745381500 +0200
 @@ -0,0 +1,10 @@
 +--- perl-5.18.2.ori/ext/B/Makefile.PL	2014-04-21 19:08:27.377659500 +0200
 ++++ perl-5.18.2/ext/B/Makefile.PL	2014-04-22 18:22:36.660542800 +0200
@@ -136,7 +136,7 @@ diff -Naur App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/ext_B_Makefile.pat
 + 
 diff -Naur App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/ext_POSIX_Makefile.patch App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/ext_POSIX_Makefile.patch
 --- App-Staticperl-1.43.ori/patches/cygwin/perl-5.18.2/ext_POSIX_Makefile.patch	1970-01-01 01:00:00.000000000 +0100
-+++ App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/ext_POSIX_Makefile.patch	2014-04-22 22:22:54.861364800 +0200
++++ App-Staticperl-1.43.new/patches/cygwin/perl-5.18.2/ext_POSIX_Makefile.patch	2014-04-23 18:24:56.760981500 +0200
 @@ -0,0 +1,13 @@
 +--- perl-5.18.2.ori/ext/POSIX/Makefile.PL	2014-04-21 19:08:27.596059800 +0200
 ++++ perl-5.18.2/ext/POSIX/Makefile.PL	2014-04-22 19:55:49.279570400 +0200
@@ -1766,8 +1766,8 @@ diff -Naur App-Staticperl-1.43.ori/patches/mingw/perl-5.18.2/makefile.dyn.mk App
 +	$(PERLEXE) -I..\lib ..\utils\perlbug -nok -s "(UNINSTALLED)" -F perl.nok
 diff -Naur App-Staticperl-1.43.ori/patches/mingw/perl-5.18.2/perl.diff App-Staticperl-1.43.new/patches/mingw/perl-5.18.2/perl.diff
 --- App-Staticperl-1.43.ori/patches/mingw/perl-5.18.2/perl.diff	1970-01-01 01:00:00.000000000 +0100
-+++ App-Staticperl-1.43.new/patches/mingw/perl-5.18.2/perl.diff	2014-04-22 22:22:54.808361800 +0200
-@@ -0,0 +1,1873 @@
++++ App-Staticperl-1.43.new/patches/mingw/perl-5.18.2/perl.diff	2014-04-23 18:24:56.433380900 +0200
+@@ -0,0 +1,1848 @@
 +diff -Naur perl-5.18.2.ori/Configure perl-5.18.2/Configure
 +--- perl-5.18.2.ori/Configure	2014-04-21 19:08:19.016044900 +0200
 ++++ perl-5.18.2/Configure	2014-04-22 20:12:17.252079200 +0200
@@ -1925,7 +1925,7 @@ diff -Naur App-Staticperl-1.43.ori/patches/mingw/perl-5.18.2/perl.diff App-Stati
 +     NAME	=> 'POSIX',
 +diff -Naur perl-5.18.2.ori/win32/makefile.dyn.mk perl-5.18.2/win32/makefile.dyn.mk
 +--- perl-5.18.2.ori/win32/makefile.dyn.mk	1970-01-01 01:00:00.000000000 +0100
-++++ perl-5.18.2/win32/makefile.dyn.mk	2014-04-22 17:57:00.168367400 +0200
+++++ perl-5.18.2/win32/makefile.dyn.mk	2014-04-23 18:23:45.591257200 +0200
 +@@ -0,0 +1,1593 @@
 ++#
 ++# Makefile to build perl on Windows using DMAKE.
@@ -1999,14 +1999,14 @@ diff -Naur App-Staticperl-1.43.ori/patches/mingw/perl-5.18.2/perl.diff App-Stati
 ++# This should be enabled to get the fork() emulation.  
 ++# This needs USE_MULTI above.
 ++#
-++#USE_ITHREADS	*= define
+++USE_ITHREADS	*= define
 ++
 ++#
 ++# uncomment to enable the implicit "host" layer for all system calls
 ++# made by perl.  This needs USE_MULTI above.  
 ++# This is also needed to get fork().
 ++#
-++#USE_IMP_SYS	*= define
+++USE_IMP_SYS	*= define
 ++
 ++#
 ++# Comment out next assign to disable perl's I/O subsystem and use compiler's 
@@ -2081,14 +2081,14 @@ diff -Naur App-Staticperl-1.43.ori/patches/mingw/perl-5.18.2/perl.diff App-Stati
 ++# extensions if you change the default.  Currently, this cannot be enabled
 ++# if you ask for USE_IMP_SYS above.
 ++#
-++PERL_MALLOC	*= define
+++#PERL_MALLOC	*= define
 ++
 ++#
 ++# set this to enable debugging mstats
 ++# This must be enabled to use the Devel::Peek::mstat() function.  This cannot
 ++# be enabled without PERL_MALLOC as well.
 ++#
-++DEBUG_MSTATS	*= define
+++#DEBUG_MSTATS	*= define
 ++
 ++#
 ++# set this to additionally provide a statically linked perl-static.exe.
@@ -3522,7 +3522,7 @@ diff -Naur App-Staticperl-1.43.ori/patches/mingw/perl-5.18.2/perl.diff App-Stati
 ++	$(PERLEXE) -I..\lib ..\utils\perlbug -nok -s "(UNINSTALLED)" -F perl.nok
 +diff -Naur perl-5.18.2.ori/win32/makefile.mk perl-5.18.2/win32/makefile.mk
 +--- perl-5.18.2.ori/win32/makefile.mk	2014-04-21 19:08:30.060864100 +0200
-++++ perl-5.18.2/win32/makefile.mk	2014-04-22 18:19:37.062031600 +0200
+++++ perl-5.18.2/win32/makefile.mk	2014-04-23 18:22:53.175165900 +0200
 +@@ -22,7 +22,7 @@
 + # newly built perl.
 + #
@@ -3532,31 +3532,6 @@ diff -Naur App-Staticperl-1.43.ori/patches/mingw/perl-5.18.2/perl.diff App-Stati
 + 
 + #
 + # Uncomment if you want to build a 32-bit Perl using a 32-bit compiler
-+@@ -63,21 +63,21 @@
-+ # uncomment to enable multiple interpreters.  This is need for fork()
-+ # emulation and for thread support.
-+ #
-+-USE_MULTI	*= define
-++#USE_MULTI	*= define
-+ 
-+ #
-+ # Interpreter cloning/threads; now reasonably complete.
-+ # This should be enabled to get the fork() emulation.  
-+ # This needs USE_MULTI above.
-+ #
-+-USE_ITHREADS	*= define
-++#USE_ITHREADS	*= define
-+ 
-+ #
-+ # uncomment to enable the implicit "host" layer for all system calls
-+ # made by perl.  This needs USE_MULTI above.  
-+ # This is also needed to get fork().
-+ #
-+-USE_IMP_SYS	*= define
-++#USE_IMP_SYS	*= define
-+ 
-+ #
-+ # Comment out next assign to disable perl's I/O subsystem and use compiler's 
 +@@ -134,7 +134,7 @@
 + # If not enabled, we automatically try to use maximum optimization
 + # with all compilers that are known to have a working optimizer.
@@ -3743,10 +3718,10 @@ diff -Naur App-Staticperl-1.43.ori/staticperl.sh App-Staticperl-1.43.new/staticp
 +   echo "------- preconfigure --------"
 +
 +   setext=""
-+   usedel="-Uusedl -Uuseshrplib "
++   usedel=-Uusedl -Uuseshrplib 
 +
 +   case "x"$USEDL in
-+       xyes|xy) usedel="-Dusedl -Duseshrplib ";;
++       xyes|xy) usedel=-Dusedl -Duseshrplib ;;
 +   esac
 +   
 +   case $FORCEOS`uname` in
