@@ -24,6 +24,14 @@ static:
 	echo "Prefix: $(PREFIX)"
 	echo "Prefix: $(PREFIX)"
 	mkdir -p $(PREFIX);
+	case $(FORCEOS)`uname` in 	\
+          MINGW*|CYGWIN*) 		\
+	  	echo "main() {};" >_test.c;    \
+	  	gcc _test.c -lcrypt;          \
+	  	if [ $? -ne 0 ]; then         \
+			echo "You need to insall gcc and libcrypt"; exit 1; \
+	  	fi; \
+	esac;
 	cd $(PREFIX); rm -rf dmake; case $(FORCEOS)`uname` in 					\
           MINGW* ) 									\
 		if [ ! -f strawberry-perl-5.18.2.2-64bit-portable.zip ]; then 		\
