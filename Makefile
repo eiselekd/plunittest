@@ -49,8 +49,8 @@ static:
 		export LDLOADLIBS="-lcrypt"; \
 		$(if $(findstring CYGWIN,$(shell uname)),export PATH=/bin/:/usr/bin:$$PATH;,) \
 		export STATICPERL=$(PREFIX); $(if $(USEDL),export USEDL=$(USEDL);,)\
-		bash ./staticperl.sh build; 	\
-		bash ./staticperl.sh install; 	\
+		bash ./staticperl.sh build   2>&1 | tee $(PREFIX)/log_build.txt; 	\
+		bash ./staticperl.sh install 2>&1 | tee $(PREFIX)/log_install.txt; 	\
 		;; \
 	esac; 
 

@@ -3743,10 +3743,10 @@ diff -Naur App-Staticperl-1.43.ori/staticperl.sh App-Staticperl-1.43.new/staticp
 +   echo "------- preconfigure --------"
 +
 +   setext=""
-+   usedel=-Uusedl -Uuseshrplib 
++   usedel="-Uusedl -Uuseshrplib "
 +
 +   case "x"$USEDL in
-+       xyes|xy) usedel=-Dusedl -Duseshrplib ;;
++       xyes|xy) usedel="-Dusedl -Duseshrplib ";;
 +   esac
 +   
 +   case $FORCEOS`uname` in
