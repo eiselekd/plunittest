@@ -24,7 +24,7 @@ static:
 	echo "Prefix: $(PREFIX)"
 	echo "Prefix: $(PREFIX)"
 	mkdir -p $(PREFIX);
-	case $(FORCEOS)`uname` in 	\
+	-case $(FORCEOS)`uname` in 	\
           MINGW*|CYGWIN*) 		\
 	  	echo "main() {};" >_test.c;    \
 	  	gcc _test.c -lcrypt -lxslt;          \
@@ -32,7 +32,7 @@ static:
 			echo "You need to insall gcc, libxslt-devel and libcrypt-devel "; exit 1; \
 	  	fi; \
 	esac;
-	cd $(PREFIX); rm -rf dmake; case $(FORCEOS)`uname` in 					\
+	-cd $(PREFIX); rm -rf dmake; case $(FORCEOS)`uname` in 					\
           MINGW* ) 									\
 		if [ ! -f strawberry-perl-5.18.2.2-64bit-portable.zip ]; then 		\
 			wget http://strawberryperl.com/download/5.18.2.2/strawberry-perl-5.18.2.2-64bit-portable.zip; \
@@ -48,7 +48,7 @@ static:
 		cd $(PREFIX)/src/perl-5.18.2/win32; $(if $(USEDL),cp makefile.dyn.mk makefile.mk;,) \
 		sed -ri 's@--INST--@$(subst \,\\,$(shell cygpath -w $(PREFIX)))\\perl@' makefile.mk; \
 		unset SHELL; cmd.exe /c dmake.exe; cmd.exe /c dmake.exe install; \
-		export PATH=$(PREFIX)/perl/bin:$$PATH; cd $(PREFIX)/perl/bin; ./perl -MConfig -e 'use Data::Dumper; print (Dumper(\%Config));' > config.txt;	\
+		export PATH=$(PREFIX)/perl/bin:$$PATH; cd $(PREFIX)/perl/bin; ./perl -MConfig -e 'use Data::Dumper; print (Dumper(\%Config));' > ../../config.txt;	\
 		;; \
 	  Darwin*|CYGWIN*|Linux*) \
 		rm -rf $(PREFIX)/*; \
@@ -60,7 +60,7 @@ static:
 		export STATICPERL=$(PREFIX); $(if $(USEDL),export USEDL=$(USEDL);,)\
 		bash ./staticperl.sh build   2>&1 | tee $(PREFIX)/log_build.txt; 	\
 		bash ./staticperl.sh install 2>&1 | tee $(PREFIX)/log_install.txt; 	\
-		export PATH=$(PREFIX)/perl/bin:$$PATH; cd $(PREFIX)/perl/bin; ./perl -MConfig -e 'use Data::Dumper; print (Dumper(\%Config));' > config.txt;	\
+		export PATH=$(PREFIX)/perl/bin:$$PATH; cd $(PREFIX)/perl/bin; ./perl -MConfig -e 'use Data::Dumper; print (Dumper(\%Config));' > ../../config.txt;	\
 		;; \
 	esac; 
 
