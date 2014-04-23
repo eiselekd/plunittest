@@ -27,9 +27,9 @@ static:
 	case $(FORCEOS)`uname` in 	\
           MINGW*|CYGWIN*) 		\
 	  	echo "main() {};" >_test.c;    \
-	  	gcc _test.c -lcrypt;          \
+	  	gcc _test.c -lcrypt -lxslt;          \
 	  	if [ $? -ne 0 ]; then         \
-			echo "You need to insall gcc and libcrypt"; exit 1; \
+			echo "You need to insall gcc, libxslt-devel and libcrypt-devel "; exit 1; \
 	  	fi; \
 	esac;
 	cd $(PREFIX); rm -rf dmake; case $(FORCEOS)`uname` in 					\
