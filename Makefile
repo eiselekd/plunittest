@@ -101,3 +101,22 @@ ext:
 p:
 	export PATH=opt/perl-win32-dyn/perl/bin:$$PATH; cc -o interp interp.c `perl -MExtUtils::Embed -e ccopts -e ldopts`
 	export PATH=opt/perl-win32-static/perl/bin:$$PATH; cc -o interp-static interp.c `perl -MExtUtils::Embed -e ccopts -e ldopts`
+
+
+GSRC=src/gtest-all.cc 
+
+%.o: %.cc
+	g++ -I . -I include -c -o $@ $^
+
+src/gtest-perl.o: src/gtest-perl.cc 
+	export PATH=opt/perl-win32-syn/perl/bin:$$PATH; \
+		g++ -I. -Iinclude -c -o $@ $^ `perl -MExtUtils::Embed -e ccopts -e ldopts`
+
+
+libgtest.a: $(GSRC:.cc=.o) src/gtest-perl.o
+	ar cr libgtest.a $^
+
+clean:
+	rm src/*.o libgtest.a
+
+
